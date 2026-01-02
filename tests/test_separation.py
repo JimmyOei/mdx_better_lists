@@ -4,41 +4,40 @@ from tests.conftest import convert
 class TestListSeparation:
     """Test list separation behavior."""
 
-    def test_blank_line_separates_lists(self, md):
+    def test_blank_line_lists(self, md):
         text = \
 """- List 1 First
 - List 1 Second
 
-- List 2 First
-- List 2 Second"""
+- List 1 Third
+- List 1 Fourth"""
         expected = \
 """<ul>
 <li>List 1 First</li>
 <li>List 1 Second</li>
-</ul>
-<ul>
-<li>List 2 First</li>
-<li>List 2 Second</li>
+<li>List 1 Third</li>
+<li>List 1 Fourth</li>
 </ul>"""
         result = convert(md, text)
         assert result == expected
 
-    def test_multiple_blank_lines_separate_lists(self, md):
+    def test_multiple_blank_lines_lists(self, md):
         text = \
 """1. List A First
 2. List A Second
 
 
-1. List B First
-2. List B Second"""
+
+3. List A Third
+
+
+4. List A Fourth"""
         expected = \
 """<ol>
 <li>List A First</li>
 <li>List A Second</li>
-</ol>
-<ol>
-<li>List B First</li>
-<li>List B Second</li>
+<li>List A Third</li>
+<li>List A Fourth</li>
 </ol>"""
         result = convert(md, text)
         assert result == expected
@@ -62,25 +61,25 @@ class TestListSeparation:
 </ul>"""
         result = convert(md, text)
         assert result == expected
-
+        
     def test_list_then_paragraph_then_list(self, md):
         input = \
-"""- First list item
-- Second list item
+"""- List A first list item
+- List A second list item
 
 This is a paragraph between lists.
 
-- Third list item
-- Fourth list item"""
+- List B first list item
+- List B second list item"""
         expected = \
 """<ul>
-<li>First list item</li>
-<li>Second list item</li>
+<li>List A first list item</li>
+<li>List A second list item</li>
 </ul>
 <p>This is a paragraph between lists.</p>
 <ul>
-<li>Third list item</li>
-<li>Fourth list item</li>
+<li>List B first list item</li>
+<li>List B second list item</li>
 </ul>"""
         result = convert(md, input)
         assert result == expected

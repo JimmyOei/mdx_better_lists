@@ -100,8 +100,6 @@ and even here.</li>
 <p>This is the first paragraph in item 1.</p>
 <p>This is the second paragraph in item 1.</p>
 </li>
-</ul>
-<ul>
 <li>
 <p>Item 2</p>
 <p>This is the first paragraph in item 2.</p>
@@ -162,21 +160,15 @@ This is a paragraph in another second item.</li>
 <p>This is the first paragraph in first item.</p>
 <p>This is the second paragraph in first item.</p>
 </li>
-</ol>
-<ol start="2">
 <li value="2">
 <p>Second item</p>
 <p>This is the first paragraph in second item.</p>
 </li>
-</ol>
-<ol start="2">
 <li value="2">
 <p>Another second item</p>
 <p>This is the first paragraph in another second item.</p>
 <p>This is the second paragraph in another second item.</p>
 </li>
-</ol>
-<ol start="3">
 <li value="3">Third item</li>
 </ol>"""
         result = convert(md, input)
