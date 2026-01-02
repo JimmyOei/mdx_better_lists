@@ -111,3 +111,73 @@ and even here.</li>
 </ul>"""
         result = convert(md, input)
         assert result == expected
+
+    def test_preserve_numbers_with_paragraphs(self, md_custom):
+        """Test preserve_numbers with paragraphs in list items."""
+        md = md_custom(preserve_numbers=True)
+        input = \
+"""1. First item
+This is a paragraph in first item.
+2. Second item
+2. Another second item
+This is a paragraph in another second item.
+3. Third item"""
+        expected = \
+"""<ol>
+<li value="1">First item
+This is a paragraph in first item.</li>
+<li value="2">Second item</li>
+<li value="2">Another second item
+This is a paragraph in another second item.</li>
+<li value="3">Third item</li>
+</ol>"""
+        result = convert(md, input)
+        assert result == expected
+        
+    def test_multiple_paragraphs_with_preserve_numbers(self, md_custom):
+        """Test preserve_numbers with multiple paragraphs in list items."""
+        md = md_custom(preserve_numbers=True)
+        input = \
+"""1. First item
+
+  This is the first paragraph in first item.
+
+  This is the second paragraph in first item.
+
+2. Second item
+
+  This is the first paragraph in second item.
+
+2. Another second item
+
+  This is the first paragraph in another second item.
+
+  This is the second paragraph in another second item.
+
+3. Third item"""
+        expected = \
+"""<ol>
+<li value="1">
+<p>First item</p>
+<p>This is the first paragraph in first item.</p>
+<p>This is the second paragraph in first item.</p>
+</li>
+</ol>
+<ol start="2">
+<li value="2">
+<p>Second item</p>
+<p>This is the first paragraph in second item.</p>
+</li>
+</ol>
+<ol start="2">
+<li value="2">
+<p>Another second item</p>
+<p>This is the first paragraph in another second item.</p>
+<p>This is the second paragraph in another second item.</p>
+</li>
+</ol>
+<ol start="3">
+<li value="3">Third item</li>
+</ol>"""
+        result = convert(md, input)
+        assert result == expected

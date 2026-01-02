@@ -139,3 +139,31 @@ Regular paragraph.
 </ol>"""
         result = convert(md, input)
         assert result == expected
+
+    def test_preserve_numbers_with_separated_lists(self, md_custom):
+        """Test preserve_numbers with separated lists."""
+        md = md_custom(preserve_numbers=True)
+        input = \
+"""1. First list item
+2. Second list item
+2. Another second
+
+This is a paragraph separating lists.
+
+3. New list first item
+3. New list second item
+5. New list third item"""
+        expected = \
+"""<ol>
+<li value="1">First list item</li>
+<li value="2">Second list item</li>
+<li value="2">Another second</li>
+</ol>
+<p>This is a paragraph separating lists.</p>
+<ol start="3">
+<li value="3">New list first item</li>
+<li value="3">New list second item</li>
+<li value="5">New list third item</li>
+</ol>"""
+        result = convert(md, input)
+        assert result == expected
