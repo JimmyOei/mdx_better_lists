@@ -3,7 +3,6 @@
 Write your TDD tests here! These examples show the testing pattern.
 """
 
-import pytest
 from tests.conftest import convert
 
 class TestSimpleUnorderedLists:
