@@ -1,8 +1,8 @@
 import pytest
 from tests.conftest import convert
 
-class TestAdvancedScenarios:
-    """Test advanced and complex list scenarios."""
+class TestAdvanced:
+    """Test advanced and complex list structures."""
 
     def test_ordered_list_starting_not_at_one(self, md):
         input = \
