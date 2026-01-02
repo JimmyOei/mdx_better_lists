@@ -11,10 +11,18 @@ class TestListSeparation:
 
 - List 2 First
 - List 2 Second"""
-        expected = "<ul><li>List 1 First</li><li>List 1 Second</li></ul><ul><li>List 2 First</li><li>List 2 Second</li></ul>"
+        expected = \
+"""<ul>
+<li>List 1 First</li>
+<li>List 1 Second</li>
+</ul>
+<ul>
+<li>List 2 First</li>
+<li>List 2 Second</li>
+</ul>"""
         result = convert(md, text)
         assert result == expected
-        
+
     def test_multiple_blank_lines_separate_lists(self, md):
         text = \
 """1. List A First
@@ -23,10 +31,18 @@ class TestListSeparation:
 
 1. List B First
 2. List B Second"""
-        expected = "<ol><li>List A First</li><li>List A Second</li></ol><ol><li>List B First</li><li>List B Second</li></ol>"
+        expected = \
+"""<ol>
+<li>List A First</li>
+<li>List A Second</li>
+</ol>
+<ol>
+<li>List B First</li>
+<li>List B Second</li>
+</ol>"""
         result = convert(md, text)
         assert result == expected
-        
+
     def test_heading_separates_lists(self, md):
         text = \
 """* List X First
@@ -34,7 +50,16 @@ class TestListSeparation:
 # Heading Between Lists
 * List Y First
 * List Y Second"""
-        expected = "<ul><li>List X First</li><li>List X Second</li></ul><h1>Heading Between Lists</h1><ul><li>List Y First</li><li>List Y Second</li></ul>"
+        expected = \
+"""<ul>
+<li>List X First</li>
+<li>List X Second</li>
+</ul>
+<h1>Heading Between Lists</h1>
+<ul>
+<li>List Y First</li>
+<li>List Y Second</li>
+</ul>"""
         result = convert(md, text)
         assert result == expected
 
@@ -47,7 +72,16 @@ This is a paragraph between lists.
 
 - Third list item
 - Fourth list item"""
-        expected = "<ul><li>First list item</li><li>Second list item</li></ul><p>This is a paragraph between lists.</p><ul><li>Third list item</li><li>Fourth list item</li></ul>"
+        expected = \
+"""<ul>
+<li>First list item</li>
+<li>Second list item</li>
+</ul>
+<p>This is a paragraph between lists.</p>
+<ul>
+<li>Third list item</li>
+<li>Fourth list item</li>
+</ul>"""
         result = convert(md, input)
         assert result == expected
 
@@ -57,7 +91,12 @@ This is a paragraph between lists.
 
 - List item 1
 - List item 2"""
-        expected = "<p>This is a paragraph before the list.</p><ul><li>List item 1</li><li>List item 2</li></ul>"
+        expected = \
+"""<p>This is a paragraph before the list.</p>
+<ul>
+<li>List item 1</li>
+<li>List item 2</li>
+</ul>"""
         result = convert(md, input)
         assert result == expected
 
@@ -67,7 +106,12 @@ This is a paragraph between lists.
 - List item 2
 
 This is a paragraph after the list."""
-        expected = "<ul><li>List item 1</li><li>List item 2</li></ul><p>This is a paragraph after the list.</p>"
+        expected = \
+"""<ul>
+<li>List item 1</li>
+<li>List item 2</li>
+</ul>
+<p>This is a paragraph after the list.</p>"""
         result = convert(md, input)
         assert result == expected
 
@@ -82,6 +126,16 @@ Regular paragraph.
 
 1. Ordered item 1
 2. Ordered item 2"""
-        expected = "<h1>Heading</h1><ul><li>List item 1</li><li>List item 2</li></ul><p>Regular paragraph.</p><ol><li>Ordered item 1</li><li>Ordered item 2</li></ol>"
+        expected = \
+"""<h1>Heading</h1>
+<ul>
+<li>List item 1</li>
+<li>List item 2</li>
+</ul>
+<p>Regular paragraph.</p>
+<ol>
+<li>Ordered item 1</li>
+<li>Ordered item 2</li>
+</ol>"""
         result = convert(md, input)
         assert result == expected

@@ -1,9 +1,75 @@
 """
 Extension module for mdx_better_lists.
+
+Based on patterns from:
+https://github.com/radude/mdx_truly_sane_lists
+https://python-markdown.github.io/extensions/sane_lists/
 """
 
+import re
 from markdown import Extension
-from markdown.blockprocessors import ListIndentProcessor
+from markdown.blockprocessors import OListProcessor, ListIndentProcessor, BlockProcessor
+from xml.etree import ElementTree as etree
+
+
+class BetterListMixin(BlockProcessor):
+    """Mixin for list processors to set custom tab_length."""
+    better_list_tab_length = 2
+
+    def __init__(self, parser):
+        super(BetterListMixin, self).__init__(parser)
+        self.tab_length = self.better_list_tab_length
+
+
+class BetterListIndentProcessor(ListIndentProcessor, BetterListMixin):
+    """ListIndentProcessor."""
+
+    def __init__(self, *args):
+        super(BetterListIndentProcessor, self).__init__(*args)
+
+
+class BetterOListProcessor(OListProcessor, BetterListMixin):
+    """OList processor."""
+
+    def __init__(self, *args, **kwargs):
+        super(BetterOListProcessor, self).__init__(*args, **kwargs)
+        # Override CHILD_RE with tab_length-aware pattern (from sane_lists)
+        self.CHILD_RE = re.compile(r'^[ ]{0,%d}((\d+\.))[ ]+(.*)' % (self.tab_length - 1))
+
+    def run(self, parent, blocks):
+        """Process ordered list with proper nested item handling."""
+        items = self.get_items(blocks.pop(0))
+
+        if parent.tag in ["ol", "ul"]:
+            lst = parent
+        else:
+            lst = etree.SubElement(parent, self.TAG)
+            
+            # Handle start attribute for non-1 starting lists
+            if self.STARTSWITH and self.STARTSWITH != "1":
+                lst.attrib["start"] = self.STARTSWITH
+
+        self.parser.state.set("list")
+        for item in items:
+            if item.startswith(" " * self.tab_length):
+                # Nested/continuation item
+                self.parser.parseBlocks(lst[-1], [item])
+            else:
+                # New list item
+                li = etree.SubElement(lst, "li")
+                self.parser.parseBlocks(li, [item])
+        self.parser.state.reset()
+
+
+class BetterUListProcessor(BetterOListProcessor, BetterListMixin):
+    """UList processor with custom tab_length - inherits run() from BetterOListProcessor."""
+    TAG = "ul"
+
+    def __init__(self, parser):
+        super(BetterUListProcessor, self).__init__(parser)
+        # Override RE and CHILD_RE with tab_length-aware patterns (from sane_lists)
+        self.RE = re.compile(r'^[ ]{0,%d}[*+-][ ]+(.*)' % (self.tab_length - 1))
+        self.CHILD_RE = re.compile(r'^[ ]{0,%d}(([*+-]))[ ]+(.*)' % (self.tab_length - 1))
 
 
 class BetterListsExtension(Extension):
@@ -11,12 +77,34 @@ class BetterListsExtension(Extension):
 
     def __init__(self, **kwargs):
         self.config = {
-            # No config yet, but placeholder for future options
+            'nested_indent': [
+                2,
+                'Number of spaces for nested list indentation (default: 2)'
+            ],
         }
         super().__init__(**kwargs)
 
     def extendMarkdown(self, md):
         """Register the extension with the Markdown instance."""
 
-        # TODO: Implement list processing logic
-        # This is a placeholder that will be implemented based on your tests
+        nested_indent = self.getConfig('nested_indent')
+
+        # Set the class variable for tab_length on the mixin
+        BetterListMixin.better_list_tab_length = nested_indent
+
+        # Replace default OList and UList processors with our custom versions
+        md.parser.blockprocessors.deregister('olist')
+        md.parser.blockprocessors.register(
+            BetterOListProcessor(md.parser), 'olist', 50
+        )
+
+        md.parser.blockprocessors.deregister('ulist')
+        md.parser.blockprocessors.register(
+            BetterUListProcessor(md.parser), 'ulist', 40
+        )
+
+        # Replace indent processor with custom version
+        md.parser.blockprocessors.deregister('indent')
+        md.parser.blockprocessors.register(
+            BetterListIndentProcessor(md.parser), 'indent', 95
+        )
