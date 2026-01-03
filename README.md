@@ -1,5 +1,7 @@
 # mdx_better_lists
 
+![PyPI](https://img.shields.io/pypi/v/mdx-better-lists)
+
 A Python-Markdown extension for better list handling, providing more intuitive list behavior and formatting with fine-grained control over list rendering. Created with Test-Driven Development (TDD) principles to ensure reliability and maintainability.
 
 ## Features
