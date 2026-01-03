@@ -99,6 +99,8 @@ and even here.</li>
 <p>This is the first paragraph in item 1.</p>
 <p>This is the second paragraph in item 1.</p>
 </li>
+</ul>
+<ul>
 <li>
 <p>Item 2</p>
 <p>This is the first paragraph in item 2.</p>
@@ -168,7 +170,9 @@ This is a paragraph in another second item.</li>
 <p>This is the first paragraph in another second item.</p>
 <p>This is the second paragraph in another second item.</p>
 </li>
-<li value="3">Third item</li>
+<li value="3">
+<p>Third item</p>
+</li>
 </ol>"""
         result = convert(md, input)
         assert result == expected

@@ -134,8 +134,12 @@ class TestPreserveNumbers:
 <li>Subitem three</li>
 </ul>
 </li>
-<li value="5">Item five</li>
-<li value="1">And a new list</li>
+<li value="5">
+<p>Item five</p>
+</li>
+<li value="1">
+<p>And a new list</p>
+</li>
 <li value="2">Continuing the new list</li>
 <li value="2">Another two</li>
 <li value="3">Ending the new list</li>

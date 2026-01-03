@@ -14,6 +14,8 @@ class TestListSeparation:
 """<ul>
 <li>List 1 First</li>
 <li>List 1 Second</li>
+</ul>
+<ul>
 <li>List 1 Third</li>
 <li>List 1 Fourth</li>
 </ul>"""
@@ -34,9 +36,15 @@ class TestListSeparation:
         expected = \
 """<ol>
 <li>List A First</li>
-<li>List A Second</li>
-<li>List A Third</li>
-<li>List A Fourth</li>
+<li>
+<p>List A Second</p>
+</li>
+<li>
+<p>List A Third</p>
+</li>
+<li>
+<p>List A Fourth</p>
+</li>
 </ol>"""
         result = convert(md, text)
         assert result == expected

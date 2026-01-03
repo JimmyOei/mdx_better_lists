@@ -77,6 +77,8 @@ class TestAdvanced:
     print("world")
 </code></pre>
 </li>
+</ul>
+<ul>
 <li>Next item</li>
 </ul>"""
         result = convert(md, input)
@@ -143,10 +145,14 @@ class TestAdvanced:
 <li>Subitem two</li>
 </ul>
 </li>
+</ul>
+<ul>
 <li>
 <p>Second list item</p>
 <p>This is a paragraph.</p>
 </li>
+</ul>
+<ul>
 <li>
 <p>New list item
   This item is of a new list.

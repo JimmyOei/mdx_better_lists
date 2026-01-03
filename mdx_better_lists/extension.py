@@ -31,6 +31,8 @@ class BetterListMixin(BlockProcessor):
     better_list_preserve_numbers = False
     always_start_at_one = False
     marker_separation = True
+    ordered_list_loose = True
+    unordered_list_separation = True
 
     def __init__(self, parser):
         super(BetterListMixin, self).__init__(parser)
@@ -38,6 +40,8 @@ class BetterListMixin(BlockProcessor):
         self.preserve_numbers = self.better_list_preserve_numbers
         self.always_start_at_one = self.always_start_at_one
         self.marker_separation = self.marker_separation
+        self.ordered_list_loose = self.ordered_list_loose
+        self.unordered_list_separation = self.unordered_list_separation
 
 
 class BetterListIndentProcessor(ListIndentProcessor, BetterListMixin):
@@ -120,8 +124,43 @@ class BetterOListProcessor(OListProcessor, BetterListMixin):
         if parent.tag in ["ol", "ul"]:
             # Nested list - use parent
             lst = parent
+        elif sibling is not None and sibling.tag == self.TAG and self.ordered_list_loose:
+            # Continue the sibling list with loose list handling (paragraph wrapping)
+            lst = sibling
+
+            # Wrap previous item's text in <p> tags
+            if lst[-1].text:
+                p = etree.Element("p")
+                p.text = lst[-1].text
+                lst[-1].text = ""
+                lst[-1].insert(0, p)
+
+            # Also wrap tail text if present
+            lch = self.lastChild(lst[-1])
+            if lch is not None and lch.tail:
+                p = etree.SubElement(lst[-1], "p")
+                p.text = lch.tail.lstrip()
+                lch.tail = ""
+
+            # Set looselist state and process first item
+            self.parser.state.set("looselist")
+            if items:
+                firstitem = items.pop(0)
+                li = etree.SubElement(lst, "li")
+
+                # Extract number from marker if preserve_numbers is enabled
+                if block_lines:
+                    for line in block_lines:
+                        match = self.CHILD_RE.match(line)
+                        if match:
+                            number = match.group(2).rstrip('.')
+                            li.attrib["value"] = number
+                            break
+
+                self.parser.parseBlocks(li, [firstitem])
+            self.parser.state.reset()
         elif sibling is not None and sibling.tag == self.TAG:
-            # Continue the sibling list
+            # Continue sibling but without loose list handling
             lst = sibling
         else:
             # Create new list
@@ -231,8 +270,8 @@ class BetterUListProcessor(BetterOListProcessor, BetterListMixin):
         if parent.tag in ["ol", "ul"]:
             # Nested list - use parent
             lst = parent
-        elif sibling is not None and sibling.tag == self.TAG:
-            # Check if we should continue the sibling list
+        elif sibling is not None and sibling.tag == self.TAG and not self.unordered_list_separation:
+            # Continue sibling only if unordered_list_separation is False
             sibling_marker = self.list_markers.get(id(sibling), None) if self.marker_separation else None
 
             # If marker_separation is enabled and markers differ, create new list
@@ -279,6 +318,14 @@ class BetterListsExtension(Extension):
             'marker_separation': [
                 True,
                 'Ensure different marker types (-, *, +) generate separate lists (default: True)'
+            ],
+            'ordered_list_loose': [
+                True,
+                'Wrap ordered list items in <p> tags when blank lines separate them (default: True)'
+            ],
+            'unordered_list_separation': [
+                True,
+                'Separate unordered lists when blank lines appear between items (default: True)'
             ]
         }
         super().__init__(**kwargs)
@@ -290,11 +337,15 @@ class BetterListsExtension(Extension):
         preserve_numbers = self.getConfig('preserve_numbers')
         always_start_at_one = self.getConfig('always_start_at_one')
         marker_separation = self.getConfig('marker_separation')
+        ordered_list_loose = self.getConfig('ordered_list_loose')
+        unordered_list_separation = self.getConfig('unordered_list_separation')
 
         BetterListMixin.better_list_tab_length = nested_indent
         BetterListMixin.better_list_preserve_numbers = preserve_numbers
         BetterListMixin.always_start_at_one = always_start_at_one
         BetterListMixin.marker_separation = marker_separation
+        BetterListMixin.ordered_list_loose = ordered_list_loose
+        BetterListMixin.unordered_list_separation = unordered_list_separation
 
         md.preprocessors.register(
             BetterListPreprocessor(md, nested_indent), 'better_list_prep', 25
