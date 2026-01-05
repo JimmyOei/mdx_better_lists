@@ -1,5 +1,6 @@
 from tests.conftest import convert
 
+
 class TestParagraphsInLists:
     """Test paragraph handling in lists."""
 
@@ -132,7 +133,7 @@ This is a paragraph in another second item.</li>
 </ol>"""
         result = convert(md, input)
         assert result == expected
-        
+
     def test_multiple_paragraphs_with_preserve_numbers(self, md_custom):
         """Test preserve_numbers with multiple paragraphs in list items."""
         md = md_custom(preserve_numbers=True)

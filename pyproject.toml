@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mdx_better_lists"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Python-Markdown extension for better list handling"
 readme = "README.md"
 license = {text = "MIT"}
@@ -50,3 +50,25 @@ addopts = "-v"
 where = ["."]
 include = ["mdx_better_lists*"]
 exclude = ["tests*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "mdx_better_lists.__version__"}
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["mdx_better_lists/__init__.py:__version__"]
+branch = "main"
+upload_to_pypi = true
+upload_to_release = true
+build_command = "pip install build && python -m build"
+major_on_zero = false
+tag_format = "v{version}"
+
+[tool.semantic_release.changelog]
+template_dir = "templates"
+changelog_file = "CHANGELOG.md"
+exclude_commit_patterns = []
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false

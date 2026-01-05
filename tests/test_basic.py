@@ -5,6 +5,7 @@ Write your TDD tests here! These examples show the testing pattern.
 
 from tests.conftest import convert
 
+
 class TestSimpleUnorderedLists:
     """Test simple unordered lists."""
 
@@ -21,7 +22,7 @@ class TestSimpleUnorderedLists:
 </ul>"""
         result = convert(md, input)
         assert result == expected
-    
+
     def test_simple_plus_unordered_list(self, md):
         input = \
 """+ Item 1
@@ -35,7 +36,7 @@ class TestSimpleUnorderedLists:
 </ul>"""
         result = convert(md, input)
         assert result == expected
-        
+
     def test_simple_asterisk_unordered_list(self, md):
         input = \
 """* Alpha
@@ -49,6 +50,7 @@ class TestSimpleUnorderedLists:
 </ul>"""
         result = convert(md, input)
         assert result == expected
+
 
 class TestSimpleOrderedLists:
     """Test simple ordered lists."""

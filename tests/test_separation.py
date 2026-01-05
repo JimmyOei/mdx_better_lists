@@ -1,5 +1,6 @@
 from tests.conftest import convert
 
+
 class TestListSeparation:
     """Test list separation behavior."""
 
@@ -68,7 +69,7 @@ class TestListSeparation:
 </ul>"""
         result = convert(md, text)
         assert result == expected
-        
+
     def test_list_then_paragraph_then_list(self, md):
         input = \
 """- List A first list item

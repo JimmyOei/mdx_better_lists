@@ -1,6 +1,11 @@
 # mdx_better_lists
 
-![PyPI](https://img.shields.io/pypi/v/mdx-better-lists)
+[![PyPI](https://img.shields.io/pypi/v/mdx-better-lists)](https://pypi.org/project/mdx-better-lists/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/mdx-better-lists)](https://pypi.org/project/mdx-better-lists/)
+[![License](https://img.shields.io/pypi/l/mdx-better-lists)](https://github.com/jimmysmith1919/mdx_better_lists/blob/main/LICENSE)
+[![CI](https://github.com/jimmysmith1919/mdx_better_lists/workflows/CI/badge.svg)](https://github.com/jimmysmith1919/mdx_better_lists/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/jimmysmith1919/mdx_better_lists/branch/main/graph/badge.svg)](https://codecov.io/gh/jimmysmith1919/mdx_better_lists)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A Python-Markdown extension for better list handling, providing more intuitive list behavior and formatting with fine-grained control over list rendering. Created with Test-Driven Development (TDD) principles to ensure reliability and maintainability.
 
@@ -12,6 +17,7 @@ A Python-Markdown extension for better list handling, providing more intuitive l
 - **Loose list control** - Control paragraph wrapping in ordered lists with blank lines
 - **Number preservation** - Optionally preserve exact list numbers from markdown source
 - **Always start at one** - Force ordered lists to always start at 1
+- **Paragraph-list splitting** - Optionally split paragraphs and lists without requiring blank lines between them
 
 ## Installation
 
@@ -63,6 +69,7 @@ html = markdown(text, extensions=['mdx_better_lists'],
 | `ordered_list_loose` | bool | True | Wrap ordered list items in `<p>` tags when blank lines separate them |
 | `preserve_numbers` | bool | False | Preserve exact list numbers from markdown (use `value` attribute) |
 | `always_start_at_one` | bool | False | Force all ordered lists to start at 1 |
+| `split_paragraph_lists` | bool | False | Split paragraphs and lists when they appear without blank lines between them |
 
 ### Configuration Details
 
@@ -193,6 +200,54 @@ When enabled, forces all ordered lists to start at 1, ignoring the starting numb
   <li>Sixth</li>
 </ol>
 ```
+
+#### `split_paragraph_lists` (default: False)
+
+When enabled, automatically splits paragraphs and lists that appear without blank lines between them into separate blocks. This allows lists to be recognized immediately after paragraphs without requiring a blank line separator.
+
+```python
+# With split_paragraph_lists=False (default)
+This is a paragraph before the list.
+- First item
+- Second item
+
+# Output:
+<p>This is a paragraph before the list.
+- First item
+- Second item</p>
+# (list markers are treated as plain text)
+
+# With split_paragraph_lists=True
+This is a paragraph before the list.
+- First item
+- Second item
+
+# Output:
+<p>This is a paragraph before the list.</p>
+<ul>
+  <li>First item</li>
+  <li>Second item</li>
+</ul>
+# (paragraph and list are separated)
+```
+
+This also works with ordered lists:
+
+```python
+# With split_paragraph_lists=True
+Introduction paragraph.
+1. First point
+2. Second point
+
+# Output:
+<p>Introduction paragraph.</p>
+<ol>
+  <li>First point</li>
+  <li>Second point</li>
+</ol>
+```
+
+**Note:** This feature only operates at the top level. List markers inside list items that are not properly indented will remain as text (standard Markdown behavior).
 
 ## Examples
 

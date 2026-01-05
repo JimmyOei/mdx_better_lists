@@ -1,5 +1,6 @@
 from tests.conftest import convert
 
+
 class TestPreserveNumbers:
     """Test preserve_numbers configuration for ordered lists."""
 
@@ -85,7 +86,7 @@ class TestPreserveNumbers:
 """3. Item three
 
   First paragraph in item three.
-    
+
   Second paragraph in item three.
 
 4. Item four in a new list
