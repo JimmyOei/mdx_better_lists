@@ -60,8 +60,10 @@ version_variables = ["mdx_better_lists/__init__.py:__version__"]
 build_command = "pip install build && python -m build"
 major_on_zero = false
 
-[tool.semantic_release.changelog]
+[tool.semantic_release.changelog.default_templates]
 changelog_file = "CHANGELOG.md"
+
+[tool.semantic_release.changelog]
 exclude_commit_patterns = []
 
 [tool.black]
