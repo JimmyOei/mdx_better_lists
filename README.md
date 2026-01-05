@@ -2,9 +2,9 @@
 
 [![PyPI](https://img.shields.io/pypi/v/mdx-better-lists)](https://pypi.org/project/mdx-better-lists/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/mdx-better-lists)](https://pypi.org/project/mdx-better-lists/)
-[![License](https://img.shields.io/pypi/l/mdx-better-lists)](https://github.com/jimmysmith1919/mdx_better_lists/blob/main/LICENSE)
-[![CI](https://github.com/jimmysmith1919/mdx_better_lists/workflows/CI/badge.svg)](https://github.com/jimmysmith1919/mdx_better_lists/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/jimmysmith1919/mdx_better_lists/branch/main/graph/badge.svg)](https://codecov.io/gh/jimmysmith1919/mdx_better_lists)
+[![License](https://img.shields.io/pypi/l/mdx-better-lists)](https://github.com/JimmyOei/mdx_better_lists/blob/main/LICENSE)
+[![CI](https://github.com/JimmyOei/mdx_better_lists/workflows/CI/badge.svg)](https://github.com/JimmyOei/mdx_better_lists/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/JimmyOei/mdx_better_lists/branch/main/graph/badge.svg)](https://codecov.io/gh/JimmyOei/mdx_better_lists)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A Python-Markdown extension for better list handling, providing more intuitive list behavior and formatting with fine-grained control over list rendering. Created with Test-Driven Development (TDD) principles to ensure reliability and maintainability.
