@@ -10,8 +10,7 @@ import re
 from xml.etree import ElementTree as etree
 
 from markdown import Extension
-from markdown.blockprocessors import (BlockProcessor, ListIndentProcessor,
-                                      OListProcessor, ParagraphProcessor)
+from markdown.blockprocessors import BlockProcessor, ListIndentProcessor, OListProcessor, ParagraphProcessor
 from markdown.preprocessors import Preprocessor
 
 
@@ -88,11 +87,7 @@ class BetterListIndentProcessor(ListIndentProcessor, BetterListMixin):
 
         for i, line in enumerate(lines):
             # Remove leading indentation (up to tab_length spaces)
-            dedented_line = (
-                line[self.tab_length :]
-                if line.startswith(" " * self.tab_length)
-                else line
-            )
+            dedented_line = line[self.tab_length :] if line.startswith(" " * self.tab_length) else line
             if self.LIST_MARKER_RE.match(dedented_line):
                 has_list_marker = True
                 first_list_line_idx = i
@@ -115,20 +110,14 @@ class BetterOListProcessor(OListProcessor, BetterListMixin):
     def __init__(self, *args, **kwargs):
         super(BetterOListProcessor, self).__init__(*args, **kwargs)
         # Override CHILD_RE with tab_length-aware pattern (from sane_lists)
-        self.CHILD_RE = re.compile(
-            r"^[ ]{0,%d}((\d+\.))[ ]+(.*)" % (self.tab_length - 1)
-        )
+        self.CHILD_RE = re.compile(r"^[ ]{0,%d}((\d+\.))[ ]+(.*)" % (self.tab_length - 1))
 
     def run(self, parent, blocks):
         """Process ordered list with proper nested item handling."""
         block = blocks.pop(0)
 
         # Create iterator for block lines to extract numbers on-demand, if preserve_numbers is enabled
-        block_lines = (
-            iter(block.split("\n"))
-            if (self.preserve_numbers and self.TAG == "ol")
-            else None
-        )
+        block_lines = iter(block.split("\n")) if (self.preserve_numbers and self.TAG == "ol") else None
 
         items = self.get_items(block)
 
@@ -138,9 +127,7 @@ class BetterOListProcessor(OListProcessor, BetterListMixin):
         if parent.tag in ["ol", "ul"]:
             # Nested list - use parent
             lst = parent
-        elif (
-            sibling is not None and sibling.tag == self.TAG and self.ordered_list_loose
-        ):
+        elif sibling is not None and sibling.tag == self.TAG and self.ordered_list_loose:
             # Continue the sibling list with loose list handling (paragraph wrapping)
             lst = sibling
 
@@ -183,11 +170,7 @@ class BetterOListProcessor(OListProcessor, BetterListMixin):
             lst = etree.SubElement(parent, self.TAG)
 
             # Handle start attribute for non-1 starting lists
-            if (
-                not self.always_start_at_one
-                and self.STARTSWITH
-                and self.STARTSWITH != "1"
-            ):
+            if not self.always_start_at_one and self.STARTSWITH and self.STARTSWITH != "1":
                 lst.attrib["start"] = self.STARTSWITH
 
         self.parser.state.set("list")
@@ -221,9 +204,7 @@ class BetterUListProcessor(BetterOListProcessor, BetterListMixin):
         super(BetterUListProcessor, self).__init__(parser)
         # Override RE and CHILD_RE with tab_length-aware patterns (from sane_lists)
         self.RE = re.compile(r"^[ ]{0,%d}[*+-][ ]+(.*)" % (self.tab_length - 1))
-        self.CHILD_RE = re.compile(
-            r"^[ ]{0,%d}(([*+-]))[ ]+(.*)" % (self.tab_length - 1)
-        )
+        self.CHILD_RE = re.compile(r"^[ ]{0,%d}(([*+-]))[ ]+(.*)" % (self.tab_length - 1))
         # Track markers for each list element (using id() as key)
         self.list_markers = {}
 
@@ -293,25 +274,12 @@ class BetterUListProcessor(BetterOListProcessor, BetterListMixin):
         if parent.tag in ["ol", "ul"]:
             # Nested list - use parent
             lst = parent
-        elif (
-            sibling is not None
-            and sibling.tag == self.TAG
-            and not self.unordered_list_separation
-        ):
+        elif sibling is not None and sibling.tag == self.TAG and not self.unordered_list_separation:
             # Continue sibling only if unordered_list_separation is False
-            sibling_marker = (
-                self.list_markers.get(id(sibling), None)
-                if self.marker_separation
-                else None
-            )
+            sibling_marker = self.list_markers.get(id(sibling), None) if self.marker_separation else None
 
             # If marker_separation is enabled and markers differ, create new list
-            if (
-                self.marker_separation
-                and sibling_marker
-                and current_marker
-                and sibling_marker != current_marker
-            ):
+            if self.marker_separation and sibling_marker and current_marker and sibling_marker != current_marker:
                 lst = etree.SubElement(parent, self.TAG)
             else:
                 # Continue the sibling list
@@ -431,9 +399,7 @@ class BetterListsExtension(Extension):
 
         BetterParagraphProcessor.split_paragraph_lists = split_paragraph_lists
 
-        md.preprocessors.register(
-            BetterListPreprocessor(md, nested_indent), "better_list_prep", 25
-        )
+        md.preprocessors.register(BetterListPreprocessor(md, nested_indent), "better_list_prep", 25)
 
         md.parser.blockprocessors.deregister("olist")
         md.parser.blockprocessors.register(BetterOListProcessor(md.parser), "olist", 50)
@@ -442,12 +408,8 @@ class BetterListsExtension(Extension):
         md.parser.blockprocessors.register(BetterUListProcessor(md.parser), "ulist", 40)
 
         md.parser.blockprocessors.deregister("indent")
-        md.parser.blockprocessors.register(
-            BetterListIndentProcessor(md.parser), "indent", 95
-        )
+        md.parser.blockprocessors.register(BetterListIndentProcessor(md.parser), "indent", 95)
 
         if split_paragraph_lists:
             md.parser.blockprocessors.deregister("paragraph")
-            md.parser.blockprocessors.register(
-                BetterParagraphProcessor(md.parser), "paragraph", 10
-            )
+            md.parser.blockprocessors.register(BetterParagraphProcessor(md.parser), "paragraph", 10)

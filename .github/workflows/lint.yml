@@ -30,8 +30,8 @@ jobs:
 
     - name: Check code formatting with black
       run: |
-        black --check mdx_better_lists tests
+        black --check mdx_better_lists
 
     - name: Check import sorting with isort
       run: |
-        isort --check-only mdx_better_lists tests
+        isort --check-only mdx_better_lists
