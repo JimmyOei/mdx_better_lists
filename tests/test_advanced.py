@@ -1,5 +1,6 @@
 from tests.conftest import convert
 
+
 class TestAdvanced:
     """Test advanced and complex list structures."""
 
@@ -55,11 +56,11 @@ class TestAdvanced:
         assert result == expected
 
     def test_very_long_list_item(self, md):
-        input = "- This is a very long list item that contains a lot of text and should still be processed correctly without any issues even though it spans many characters and words and sentences."
+        input = "- This is a very long list item that contains a lot of text and should still be processed correctly without any issues even though it spans many characters and words and sentences."  # noqa: E501
         expected = \
 """<ul>
 <li>This is a very long list item that contains a lot of text and should still be processed correctly without any issues even though it spans many characters and words and sentences.</li>
-</ul>"""
+</ul>"""  # noqa: E501
         result = convert(md, input)
         assert result == expected
 
@@ -101,13 +102,13 @@ class TestAdvanced:
 </ol>"""
         result = convert(md, input)
         assert result == expected
-        
+
     def test_complex_nested_with_separation(self, md):
         """Test preserve_numbers with complex nested lists and separation."""
         input = \
 """- First list item
   Paragraph in first item.
-  
+
   - Subitem one
     - Sub-subitem one
     - Sub-subitem two
@@ -120,12 +121,12 @@ class TestAdvanced:
   This item is of a new list.
 1. First ordered item
    With paragraph in first ordered item.
-   
+
    1. Nested ordered one
    2. Nested ordered two
      1. Deep nested one
        With a paragraph.
-       
+
        And another paragraph with a list:
        1. Deep deep one
        2. Deep deep two

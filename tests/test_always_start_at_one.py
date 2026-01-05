@@ -1,5 +1,6 @@
 from tests.conftest import convert
 
+
 class TestAlwaysStartAtOne:
     """Test always_start_at_one configuration for ordered lists."""
 
@@ -53,7 +54,7 @@ class TestAlwaysStartAtOne:
 </ol>"""
         result = convert(md, input)
         assert result == expected
-        
+
     def test_always_start_at_one_off_with_nested_lists(self, md):
         """Test always_start_at_one with nested ordered lists."""
         input = \

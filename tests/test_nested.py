@@ -1,5 +1,6 @@
 from tests.conftest import convert
 
+
 class TestNestedLists:
     """Test nested lists behavior."""
 
@@ -20,7 +21,7 @@ class TestNestedLists:
 </ul>"""
         result = convert(md, input)
         assert result == expected
-        
+
     def test_nested_list_with_4_space_indent(self, md_custom):
         md = md_custom(nested_indent=4)
         input = \
@@ -39,7 +40,7 @@ class TestNestedLists:
 </ul>"""
         result = convert(md, input)
         assert result == expected
-        
+
     def test_mixed_nested_lists(self, md):
         input = \
 """1. Item 1
@@ -63,7 +64,7 @@ class TestNestedLists:
 </ol>"""
         result = convert(md, input)
         assert result == expected
-        
+
     def test_deeply_nested_lists(self, md):
         input = \
 """- Level 1

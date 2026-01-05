@@ -1,5 +1,6 @@
 from tests.conftest import convert
 
+
 class TestMarkerSeparation:
     """Test marker_separation configuration for unordered lists."""
 
