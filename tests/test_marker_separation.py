@@ -6,249 +6,188 @@ class TestMarkerSeparation:
 
     def test_marker_separation_enabled_default(self, md):
         """Test that default behavior separates different marker types."""
-        input = \
-"""- Dash item
-+ Plus item
-* Star item"""
-        expected = \
-"""<ul>
-<li>Dash item</li>
-</ul>
-<ul>
-<li>Plus item</li>
-</ul>
-<ul>
-<li>Star item</li>
-</ul>"""
+        input = "- Dash item\n" "+ Plus item\n" "* Star item"
+        expected = (
+            "<ul>\n"
+            "<li>Dash item</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Plus item</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Star item</li>\n"
+            "</ul>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_disabled(self, md_custom):
         """Test that disabling marker_separation allows mixed markers in same list."""
         md = md_custom(marker_separation=False)
-        input = \
-"""- Dash item
-+ Plus item
-* Star item"""
-        expected = \
-"""<ul>
-<li>Dash item</li>
-<li>Plus item</li>
-<li>Star item</li>
-</ul>"""
+        input = "- Dash item\n" "+ Plus item\n" "* Star item"
+        expected = "<ul>\n" "<li>Dash item</li>\n" "<li>Plus item</li>\n" "<li>Star item</li>\n" "</ul>"
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_same_marker_continues_list(self, md):
         """Test that same marker type continues the same list."""
-        input = \
-"""- First dash
-- Second dash
-- Third dash"""
-        expected = \
-"""<ul>
-<li>First dash</li>
-<li>Second dash</li>
-<li>Third dash</li>
-</ul>"""
+        input = "- First dash\n" "- Second dash\n" "- Third dash"
+        expected = "<ul>\n" "<li>First dash</li>\n" "<li>Second dash</li>\n" "<li>Third dash</li>\n" "</ul>"
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_dash_to_plus(self, md):
         """Test separation when switching from dash to plus."""
-        input = \
-"""- Dash item one
-- Dash item two
-+ Plus item one
-+ Plus item two"""
-        expected = \
-"""<ul>
-<li>Dash item one</li>
-<li>Dash item two</li>
-</ul>
-<ul>
-<li>Plus item one</li>
-<li>Plus item two</li>
-</ul>"""
+        input = "- Dash item one\n" "- Dash item two\n" "+ Plus item one\n" "+ Plus item two"
+        expected = (
+            "<ul>\n"
+            "<li>Dash item one</li>\n"
+            "<li>Dash item two</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Plus item one</li>\n"
+            "<li>Plus item two</li>\n"
+            "</ul>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_dash_to_star(self, md):
         """Test separation when switching from dash to star."""
-        input = \
-"""- Dash item
-* Star item"""
-        expected = \
-"""<ul>
-<li>Dash item</li>
-</ul>
-<ul>
-<li>Star item</li>
-</ul>"""
+        input = "- Dash item\n" "* Star item"
+        expected = "<ul>\n" "<li>Dash item</li>\n" "</ul>\n" "<ul>\n" "<li>Star item</li>\n" "</ul>"
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_plus_to_star(self, md):
         """Test separation when switching from plus to star."""
-        input = \
-"""+ Plus item
-* Star item"""
-        expected = \
-"""<ul>
-<li>Plus item</li>
-</ul>
-<ul>
-<li>Star item</li>
-</ul>"""
+        input = "+ Plus item\n" "* Star item"
+        expected = "<ul>\n" "<li>Plus item</li>\n" "</ul>\n" "<ul>\n" "<li>Star item</li>\n" "</ul>"
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_multiple_switches(self, md):
         """Test multiple marker switches."""
-        input = \
-"""- Dash
-+ Plus
-- Dash again
-* Star
-- Dash once more"""
-        expected = \
-"""<ul>
-<li>Dash</li>
-</ul>
-<ul>
-<li>Plus</li>
-</ul>
-<ul>
-<li>Dash again</li>
-</ul>
-<ul>
-<li>Star</li>
-</ul>
-<ul>
-<li>Dash once more</li>
-</ul>"""
+        input = "- Dash\n" "+ Plus\n" "- Dash again\n" "* Star\n" "- Dash once more"
+        expected = (
+            "<ul>\n"
+            "<li>Dash</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Plus</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Dash again</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Star</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Dash once more</li>\n"
+            "</ul>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_with_nested_lists(self, md):
         """Test marker separation with nested lists."""
-        input = \
-"""- Outer dash
-  + Nested plus
-  + Another nested plus
-- Outer dash two
-+ Outer plus"""
-        expected = \
-"""<ul>
-<li>Outer dash<ul>
-<li>Nested plus</li>
-<li>Another nested plus</li>
-</ul>
-</li>
-<li>Outer dash two</li>
-</ul>
-<ul>
-<li>Outer plus</li>
-</ul>"""
+        input = "- Outer dash\n" "  + Nested plus\n" "  + Another nested plus\n" "- Outer dash two\n" "+ Outer plus"
+        expected = (
+            "<ul>\n"
+            "<li>Outer dash<ul>\n"
+            "<li>Nested plus</li>\n"
+            "<li>Another nested plus</li>\n"
+            "</ul>\n"
+            "</li>\n"
+            "<li>Outer dash two</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Outer plus</li>\n"
+            "</ul>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_disabled_with_nested(self, md_custom):
         """Test marker_separation=False with nested lists."""
         md = md_custom(marker_separation=False)
-        input = \
-"""- Outer dash
-  + Nested plus
-* Outer star"""
-        expected = \
-"""<ul>
-<li>Outer dash<ul>
-<li>Nested plus</li>
-</ul>
-</li>
-<li>Outer star</li>
-</ul>"""
+        input = "- Outer dash\n" "  + Nested plus\n" "* Outer star"
+        expected = (
+            "<ul>\n" "<li>Outer dash<ul>\n" "<li>Nested plus</li>\n" "</ul>\n" "</li>\n" "<li>Outer star</li>\n" "</ul>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_with_paragraphs(self, md):
         """Test marker separation with multi-paragraph items."""
-        input = \
-"""- Dash item
-
-  Paragraph in dash item
-
-+ Plus item
-
-  Paragraph in plus item"""
-        expected = \
-"""<ul>
-<li>
-<p>Dash item</p>
-<p>Paragraph in dash item</p>
-</li>
-</ul>
-<ul>
-<li>
-<p>Plus item</p>
-<p>Paragraph in plus item</p>
-</li>
-</ul>"""
+        input = "- Dash item\n" "\n" "  Paragraph in dash item\n" "\n" "+ Plus item\n" "\n" "  Paragraph in plus item"
+        expected = (
+            "<ul>\n"
+            "<li>\n"
+            "<p>Dash item</p>\n"
+            "<p>Paragraph in dash item</p>\n"
+            "</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>\n"
+            "<p>Plus item</p>\n"
+            "<p>Paragraph in plus item</p>\n"
+            "</li>\n"
+            "</ul>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_explicit_paragraph_break(self, md):
         """Test that explicit paragraph breaks still separate lists."""
-        input = \
-"""- Dash item
-
-Text between lists
-
-- Dash item again"""
-        expected = \
-"""<ul>
-<li>Dash item</li>
-</ul>
-<p>Text between lists</p>
-<ul>
-<li>Dash item again</li>
-</ul>"""
+        input = "- Dash item\n" "\n" "Text between lists\n" "\n" "- Dash item again"
+        expected = (
+            "<ul>\n"
+            "<li>Dash item</li>\n"
+            "</ul>\n"
+            "<p>Text between lists</p>\n"
+            "<ul>\n"
+            "<li>Dash item again</li>\n"
+            "</ul>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_marker_separation_complex_nested(self, md):
         """Test complex nested structure with marker separation."""
-        input = \
-"""- Outer dash one
-  * Nested star
-    + Deep nested plus
-    + Deep nested plus two
-  * Nested star two
-- Outer dash two
-+ Outer plus
-  - Nested dash
-* Outer star"""
-        expected = \
-"""<ul>
-<li>Outer dash one<ul>
-<li>Nested star<ul>
-<li>Deep nested plus</li>
-<li>Deep nested plus two</li>
-</ul>
-</li>
-<li>Nested star two</li>
-</ul>
-</li>
-<li>Outer dash two</li>
-</ul>
-<ul>
-<li>Outer plus<ul>
-<li>Nested dash</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>Outer star</li>
-</ul>"""
+        input = (
+            "- Outer dash one\n"
+            "  * Nested star\n"
+            "    + Deep nested plus\n"
+            "    + Deep nested plus two\n"
+            "  * Nested star two\n"
+            "- Outer dash two\n"
+            "+ Outer plus\n"
+            "  - Nested dash\n"
+            "* Outer star"
+        )
+        expected = (
+            "<ul>\n"
+            "<li>Outer dash one<ul>\n"
+            "<li>Nested star<ul>\n"
+            "<li>Deep nested plus</li>\n"
+            "<li>Deep nested plus two</li>\n"
+            "</ul>\n"
+            "</li>\n"
+            "<li>Nested star two</li>\n"
+            "</ul>\n"
+            "</li>\n"
+            "<li>Outer dash two</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Outer plus<ul>\n"
+            "<li>Nested dash</li>\n"
+            "</ul>\n"
+            "</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Outer star</li>\n"
+            "</ul>"
+        )
         result = convert(md, input)
         assert result == expected

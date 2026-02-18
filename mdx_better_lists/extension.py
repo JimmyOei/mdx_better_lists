@@ -89,7 +89,7 @@ class BetterListIndentProcessor(ListIndentProcessor, BetterListMixin):
             # Skip empty lines and lines without proper indentation
             if not line.strip() or not line.startswith(" " * self.tab_length):
                 continue
-                
+
             # Remove leading indentation (up to tab_length spaces)
             dedented_line = line[self.tab_length :]
             if self.LIST_MARKER_RE.match(dedented_line):

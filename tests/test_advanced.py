@@ -5,180 +5,148 @@ class TestAdvanced:
     """Test advanced and complex list structures."""
 
     def test_ordered_list_starting_not_at_one(self, md):
-        input = \
-"""5. Fifth item
-6. Sixth item
-7. Seventh item"""
-        expected = \
-"""<ol start="5">
-<li>Fifth item</li>
-<li>Sixth item</li>
-<li>Seventh item</li>
-</ol>"""
+        input = "5. Fifth item\n" "6. Sixth item\n" "7. Seventh item"
+        expected = '<ol start="5">\n' "<li>Fifth item</li>\n" "<li>Sixth item</li>\n" "<li>Seventh item</li>\n" "</ol>"
         result = convert(md, input)
         assert result == expected
 
     def test_ordered_list_non_sequential_numbers(self, md):
-        input = \
-"""1. First
-3. Third
-7. Seventh"""
-        expected = \
-"""<ol>
-<li>First</li>
-<li>Third</li>
-<li>Seventh</li>
-</ol>"""
+        input = "1. First\n" "3. Third\n" "7. Seventh"
+        expected = "<ol>\n" "<li>First</li>\n" "<li>Third</li>\n" "<li>Seventh</li>\n" "</ol>"
         result = convert(md, input)
         assert result == expected
 
     def test_single_item_list(self, md):
         input = "- Only one item"
-        expected = \
-"""<ul>
-<li>Only one item</li>
-</ul>"""
+        expected = "<ul>\n" "<li>Only one item</li>\n" "</ul>"
         result = convert(md, input)
         assert result == expected
 
     def test_list_item_with_trailing_spaces(self, md):
-        input = \
-"""- Item with spaces
-- Normal item
-- More spaces     """
-        expected = \
-"""<ul>
-<li>Item with spaces</li>
-<li>Normal item</li>
-<li>More spaces     </li>
-</ul>"""
+        input = "- Item with spaces\n" "- Normal item\n" "- More spaces     "
+        expected = "<ul>\n" "<li>Item with spaces</li>\n" "<li>Normal item</li>\n" "<li>More spaces     </li>\n" "</ul>"
         result = convert(md, input)
         assert result == expected
 
     def test_very_long_list_item(self, md):
         input = "- This is a very long list item that contains a lot of text and should still be processed correctly without any issues even though it spans many characters and words and sentences."  # noqa: E501
-        expected = \
-"""<ul>
-<li>This is a very long list item that contains a lot of text and should still be processed correctly without any issues even though it spans many characters and words and sentences.</li>
-</ul>"""  # noqa: E501
+        expected = (
+            "<ul>\n"
+            "<li>This is a very long list item that contains a lot of text and should still be processed correctly without any issues even though it spans many characters and words and sentences.</li>\n"  # noqa: E501
+            "</ul>"
+        )  # noqa: E501
         result = convert(md, input)
         assert result == expected
 
     def test_list_with_code_block(self, md):
-        input = \
-"""- Item with code:
-
-      def hello():
-          print("world")
-
-- Next item"""
-        expected = \
-"""<ul>
-<li>Item with code:<pre><code>def hello():
-    print("world")
-</code></pre>
-</li>
-</ul>
-<ul>
-<li>Next item</li>
-</ul>"""
+        input = "- Item with code:\n" "\n" "      def hello():\n" '          print("world")\n' "\n" "- Next item"
+        expected = (
+            "<ul>\n"
+            "<li>Item with code:<pre><code>def hello():\n"
+            '    print("world")\n'
+            "</code></pre>\n"
+            "</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>Next item</li>\n"
+            "</ul>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_list_with_blockquote(self, md):
-        input = \
-"""1. First item
-2. Item with quote:
-  > This is a quote
-3. Third item"""
-        expected = \
-"""<ol>
-<li>First item</li>
-<li>Item with quote:<blockquote>
-<p>This is a quote</p>
-</blockquote>
-</li>
-<li>Third item</li>
-</ol>"""
+        input = "1. First item\n" "2. Item with quote:\n" "  > This is a quote\n" "3. Third item"
+        expected = (
+            "<ol>\n"
+            "<li>First item</li>\n"
+            "<li>Item with quote:<blockquote>\n"
+            "<p>This is a quote</p>\n"
+            "</blockquote>\n"
+            "</li>\n"
+            "<li>Third item</li>\n"
+            "</ol>"
+        )
         result = convert(md, input)
         assert result == expected
 
     def test_complex_nested_with_separation(self, md):
         """Test preserve_numbers with complex nested lists and separation."""
-        input = \
-"""- First list item
-  Paragraph in first item.
-
-  - Subitem one
-    - Sub-subitem one
-    - Sub-subitem two
-  - Subitem two
-- Second list item
-
-  This is a paragraph.
-
-- New list item
-  This item is of a new list.
-1. First ordered item
-   With paragraph in first ordered item.
-
-   1. Nested ordered one
-   2. Nested ordered two
-     1. Deep nested one
-       With a paragraph.
-
-       And another paragraph with a list:
-       1. Deep deep one
-       2. Deep deep two
-    3. Nested ordered three
-2. Second ordered item"""
-        expected = \
-"""<ul>
-<li>
-<p>First list item
-  Paragraph in first item.</p>
-<ul>
-<li>Subitem one<ul>
-<li>Sub-subitem one</li>
-<li>Sub-subitem two</li>
-</ul>
-</li>
-<li>Subitem two</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>
-<p>Second list item</p>
-<p>This is a paragraph.</p>
-</li>
-</ul>
-<ul>
-<li>
-<p>New list item
-  This item is of a new list.
-1. First ordered item
-   With paragraph in first ordered item.</p>
-<ol>
-<li>Nested ordered one</li>
-<li>Nested ordered two<ol>
-<li>
-<p>Deep nested one
-   With a paragraph.</p>
-<p>And another paragraph with a list:</p>
-<ol>
-<li>Deep deep one</li>
-<li>Deep deep two
-    3. Nested ordered three</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-</ul>
-<ol start="2">
-<li>Second ordered item</li>
-</ol>"""
+        input = (
+            "- First list item\n"
+            "  Paragraph in first item.\n"
+            "\n"
+            "  - Subitem one\n"
+            "    - Sub-subitem one\n"
+            "    - Sub-subitem two\n"
+            "  - Subitem two\n"
+            "- Second list item\n"
+            "\n"
+            "  This is a paragraph.\n"
+            "\n"
+            "- New list item\n"
+            "  This item is of a new list.\n"
+            "1. First ordered item\n"
+            "   With paragraph in first ordered item.\n"
+            "\n"
+            "   1. Nested ordered one\n"
+            "   2. Nested ordered two\n"
+            "     1. Deep nested one\n"
+            "       With a paragraph.\n"
+            "\n"
+            "       And another paragraph with a list:\n"
+            "       1. Deep deep one\n"
+            "       2. Deep deep two\n"
+            "    3. Nested ordered three\n"
+            "2. Second ordered item"
+        )
+        expected = (
+            "<ul>\n"
+            "<li>\n"
+            "<p>First list item\n"
+            "  Paragraph in first item.</p>\n"
+            "<ul>\n"
+            "<li>Subitem one<ul>\n"
+            "<li>Sub-subitem one</li>\n"
+            "<li>Sub-subitem two</li>\n"
+            "</ul>\n"
+            "</li>\n"
+            "<li>Subitem two</li>\n"
+            "</ul>\n"
+            "</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>\n"
+            "<p>Second list item</p>\n"
+            "<p>This is a paragraph.</p>\n"
+            "</li>\n"
+            "</ul>\n"
+            "<ul>\n"
+            "<li>\n"
+            "<p>New list item\n"
+            "  This item is of a new list.\n"
+            "1. First ordered item\n"
+            "   With paragraph in first ordered item.</p>\n"
+            "<ol>\n"
+            "<li>Nested ordered one</li>\n"
+            "<li>Nested ordered two<ol>\n"
+            "<li>\n"
+            "<p>Deep nested one\n"
+            "   With a paragraph.</p>\n"
+            "<p>And another paragraph with a list:</p>\n"
+            "<ol>\n"
+            "<li>Deep deep one</li>\n"
+            "<li>Deep deep two\n"
+            "    3. Nested ordered three</li>\n"
+            "</ol>\n"
+            "</li>\n"
+            "</ol>\n"
+            "</li>\n"
+            "</ol>\n"
+            "</li>\n"
+            "</ul>\n"
+            '<ol start="2">\n'
+            "<li>Second ordered item</li>\n"
+            "</ol>"
+        )
         result = convert(md, input)
         assert result == expected
