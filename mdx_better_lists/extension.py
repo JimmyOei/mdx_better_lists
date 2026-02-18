@@ -56,44 +56,48 @@ class BetterListIndentProcessor(ListIndentProcessor, BetterListMixin):
 
     def run(self, parent, blocks):
         block = blocks[0]
-
-        # Check if this indented block contains lines with insufficient indentation
         lines = block.split("\n")
         split_idx = -1
 
+        # Check if this indented block contains lines that should start a new block
         for i, line in enumerate(lines):
             # Skip empty lines
             if not line.strip():
                 continue
 
-            # Check if line doesn't have proper indentation (should have at least tab_length spaces)
-            if not line.startswith(" " * self.tab_length):
-                # This line doesn't belong in an indented block
+            # Check if line is a list marker at the root level (0-3 spaces, not tab_length)
+            # This indicates content that should not be part of this indented block
+            if not line.startswith(" " * self.tab_length) and self.LIST_MARKER_RE.match(line):
+                # This is a new list item at the root level, split it out
                 split_idx = i
                 break
 
-        # If we found improperly indented content, split it out
+        # If we found root-level content, split it out
         if split_idx > 0:
             before_split = "\n".join(lines[:split_idx])
             after_split = "\n".join(lines[split_idx:])
             blocks[0] = before_split
             blocks.insert(1, after_split)
 
-        # Check if this indented block contains list markers after splitting
+        # Check if this indented block contains nested list markers
         block = blocks[0]
         lines = block.split("\n")
         has_list_marker = False
         first_list_line_idx = -1
 
         for i, line in enumerate(lines):
+            # Skip empty lines and lines without proper indentation
+            if not line.strip() or not line.startswith(" " * self.tab_length):
+                continue
+                
             # Remove leading indentation (up to tab_length spaces)
-            dedented_line = line[self.tab_length :] if line.startswith(" " * self.tab_length) else line
+            dedented_line = line[self.tab_length :]
             if self.LIST_MARKER_RE.match(dedented_line):
                 has_list_marker = True
                 first_list_line_idx = i
                 break
 
-        # If we found a list marker, split the block at that point
+        # If we found a nested list marker, split the block at that point
         if has_list_marker and first_list_line_idx > 0:
             before_list = "\n".join(lines[:first_list_line_idx])
             from_list = "\n".join(lines[first_list_line_idx:])
