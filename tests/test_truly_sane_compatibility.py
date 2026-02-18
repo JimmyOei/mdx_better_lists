@@ -85,9 +85,7 @@ class TrulySaneListCompatibilityTest(unittest.TestCase):
         actual = markdown(
             dedent(raw),
             extensions=["mdx_better_lists"],
-            extension_configs={
-                "mdx_better_lists": {"nested_indent": 4, "marker_separation": False}
-            },
+            extension_configs={"mdx_better_lists": {"nested_indent": 4, "marker_separation": False}},
         )
         self.assertEqual(expected, actual)
 
